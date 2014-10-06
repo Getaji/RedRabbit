@@ -18,20 +18,23 @@ public class StatusViewModel {
     /* ================ CONSTRUCTORS ================ */
     public StatusViewModel(StatusModel model) {
         this.model = model;
-        StaticObjects.IMAGE_CACHE.request(model.getIconUrl(), (loc, img) -> {
+        StaticObjects.getImageCache().request(model.getIconUrl(), (loc, img) -> {
             view.setImage(img);
         });
         view.setTitle(model.getTitle());
+        view.setDate(model.getDate(), model.getDateUrl());
         view.setText(model.getText());
-        view.setVia(model.getVia(), "");
+        view.setVia(model.getVia(), model.getViaUrl());
 
         // TODO RTハンドラ→idをもとにStatusCacheからデータを取りAccountsModelのCurrentAccountからRT
         if (model.isTwitterStatus()) {
             view.addRTButtonHandler(e -> {
                 if (!view.isPushedRT()) {
-                    model.retweet();
+                    boolean isComplete = model.retweet();
+                    view.setRTButtonSelected(isComplete);
                 } else {
-                    model.unRetweet();
+                    boolean isComplete = model.unRetweet();
+                    view.setRTButtonSelected(!isComplete);
                 }
             });
             view.addFavButtonHandler(e -> {

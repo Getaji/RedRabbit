@@ -13,12 +13,9 @@ import java.util.function.Consumer;
  */
 public class Wrapper<T> {
 
-    private T obj;
-    private final List<Consumer<Wrapper<T>>> handlers = new ArrayList<>();
-    private final List<Wrapper<T>> bindWrappers = new ArrayList<>();
-
-    // ======== STATIC
-
+    // ================================================================
+    // Static methods
+    // ================================================================
     /**
      * 値を包みます。null値は許可されません。
      * @param obj 包むオブジェクト
@@ -47,8 +44,17 @@ public class Wrapper<T> {
         return wrapNullable(null);
     }
 
-    // ======== CONSTRUCTOR
+    // ================================================================
+    // Fields
+    // ================================================================
+    private T obj;
+    private final List<Consumer<Wrapper<T>>> handlers = new ArrayList<>();
+    private final List<Consumer<T>> handlers2 = new ArrayList<>();
+    private final List<Wrapper<T>> bindWrappers = new ArrayList<>();
 
+    // ================================================================
+    // Getter
+    // ================================================================
     /**
      * オブジェクトを包んだWrapperインスタンスを生成します。null値は許可されます。
      * @param obj 包むオブジェクト
@@ -57,8 +63,9 @@ public class Wrapper<T> {
         this.obj = obj;
     }
 
-    // ======== GETTER
-
+    // ================================================================
+    // Getter
+    // ================================================================
     /**
      * 包んだオブジェクトを取得します。
      * @return オブジェクト
@@ -75,8 +82,13 @@ public class Wrapper<T> {
         return bindWrappers;
     }
 
-    // ======== SETTER
+    public boolean isPresent() {
+        return obj != null;
+    }
 
+    // ================================================================
+    // Setter
+    // ================================================================
     /**
      * オブジェクトをセットします。
      * @param obj オブジェクト
@@ -86,6 +98,9 @@ public class Wrapper<T> {
         this.obj = obj;
         for (Consumer<Wrapper<T>> handler : handlers) {
             handler.accept(this);
+        }
+        for (Consumer<T> handler : handlers2) {
+            handler.accept(obj);
         }
         for (Wrapper<T> bindWrapper : bindWrappers) {
             bindWrapper.set(obj);
@@ -155,8 +170,9 @@ public class Wrapper<T> {
         return true;
     }
 
-    // ======== OPTIONAL
-
+    // ================================================================
+    // Optional
+    // ================================================================
     /**
      * {@link java.util.Optional}に変換したものを返します。null値は許可されません。
      * これは<code>{@link Optional#of Optional.of}({@link Wrapper#get() wrapper.get()})</code>と等価です。

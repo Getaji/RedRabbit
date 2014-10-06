@@ -13,6 +13,10 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import twitter4j.*;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * javadoc here.
  *
@@ -25,21 +29,7 @@ public class Main extends Application {
     @Getter private MainWindowViewModel mainWindowViewModel;
 
     public static void main(String[] args) throws Exception {
-        //twitterPreInit();
         Application.launch(Main.class, args);
-    }
-
-    private static void twitterPreInit() throws TwitterException {
-        TwitterConnector connector = new TwitterConnector();
-        connector.setAPIKeys(
-                "oth6oiwapFEgesjI6U9CcD2QC",
-                "Qc3utRmAcBcO5BeZSG4xZKaVx81jf3NHRHKXXZKJHxEC2du1KS"
-        );
-        Account account = connector.setAccessToken(
-                "730631798-IhbL8ptKcQMKM1e1SGiSmMcj4pxicH4NKo20Uoox",
-                "gAPkvAaoofEBIoiLlgk4ckRo8ySgpEwGFqTIo5INnN4Jw"
-        );
-        StaticObjects.ACCOUNTS.addAccount(account);
     }
 
     @Override
@@ -52,17 +42,30 @@ public class Main extends Application {
         stage.show();
         mainWindowViewModel.setWindowStatus(WindowStatusType.PLAIN, "起動成功");
         log.trace("Starting complete");
-        //linkTwitter();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit((Callable<Void>) () -> {
+            linkTwitter();
+            return null;
+        });
     }
 
-    private void linkTwitter() {
-        Account account = StaticObjects.ACCOUNTS.getAccount(730631798);
+    private void linkTwitter() throws TwitterException {
+        TwitterConnector connector = new TwitterConnector();
+        connector.setAPIKeys(
+                "oth6oiwapFEgesjI6U9CcD2QC",
+                "Qc3utRmAcBcO5BeZSG4xZKaVx81jf3NHRHKXXZKJHxEC2du1KS"
+        );
+        Account account = connector.setAccessToken(
+                "730631798-IhbL8ptKcQMKM1e1SGiSmMcj4pxicH4NKo20Uoox",
+                "gAPkvAaoofEBIoiLlgk4ckRo8ySgpEwGFqTIo5INnN4Jw"
+        );
+        StaticObjects.getAccounts().addAccount(account);
         TwitterStreamFactory streamFactory = new TwitterStreamFactory(account.getConfiguration());
         TwitterStream twitterStream = streamFactory.getInstance(account.getAccessToken());
         twitterStream.addListener(new UserStreamAdapter() {
             @Override
             public void onStatus(Status status) {
-                StaticObjects.STATUS_CACHE.set(status);
+                StaticObjects.getStatusCache().set(status);
                 Platform.runLater(() -> {
                     mainWindowViewModel.addStatusToCurrent(
                             StatusViewModelFactory.createFromTwitter(status)

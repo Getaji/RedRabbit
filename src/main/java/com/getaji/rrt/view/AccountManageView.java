@@ -75,7 +75,7 @@ public class AccountManageView extends Stage {
 
     public void loadAccounts() {
         listView.getItems().clear();
-        StaticObjects.ACCOUNTS.getAccounts().forEach(twitter -> {
+        StaticObjects.getAccounts().getAccounts().forEach(twitter -> {
             listView.getItems().add(twitter.getScreenName());
         });
     }

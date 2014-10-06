@@ -1,10 +1,11 @@
 package com.getaji.rrt.model;
 
+import com.getaji.rrt.util.Wrapper;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * javadoc here.
@@ -13,16 +14,11 @@ import java.util.Set;
  */
 public class AccountsModel {
     @Getter private Set<Account> accounts = new HashSet<>();
-    @Getter @Setter private Account currentAccount;
+    private Wrapper<Account> currentAccount = Wrapper.empty();
 
-    public void addAccount(Account account) {
-        if (accounts.isEmpty()) {
-            currentAccount = account;
-        }
-
-        accounts.add(account);
-    }
-
+    // ================================================================
+    // Getter
+    // ================================================================
     /**
      * 指定したscreenNameを持つAccountインスタンスを返します。存在しない場合はnullを返します。
      * @param screenName
@@ -45,5 +41,28 @@ public class AccountsModel {
             }
         }
         return null;
+    }
+
+    public Account getCurrentAccount() {
+        return currentAccount.get();
+    }
+
+    public boolean isCurrentAccountPresent() {
+        return currentAccount.isPresent();
+    }
+
+    public void addCurrentAccountChangeHandler(Consumer<Wrapper<Account>> handler) {
+        currentAccount.addValueSetHandler(handler);
+    }
+
+    // ================================================================
+    // Setter
+    // ================================================================
+    public void addAccount(Account account) {
+        if (accounts.isEmpty()) {
+            currentAccount.set(account);
+        }
+
+        accounts.add(account);
     }
 }

@@ -1,6 +1,8 @@
 package com.getaji.rrt.util;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.ToggleButton;
 import lombok.extern.log4j.Log4j2;
 
 import java.awt.*;
@@ -68,5 +70,15 @@ public class FXHelper {
             }
         });
         return hyperlink;
+    }
+
+    public static void setButtonTextSwitching(ToggleButton button, String popped, String pushed) {
+        button.addEventHandler(ActionEvent.ACTION, e -> {
+            if (button.isSelected()) {
+                button.setText(pushed);
+            } else {
+                button.setText(popped);
+            }
+        });
     }
 }

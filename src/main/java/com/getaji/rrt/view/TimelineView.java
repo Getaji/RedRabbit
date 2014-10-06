@@ -36,11 +36,12 @@ public class TimelineView {
 
             if (view == null) { return; }
 
-            if (!isBound) {
+            double size = viewModel.getModel().getWidth();
+            if (!isBound || view.getView().getPrefWidth() != size) {
                 /*view.getView().prefWidthProperty().bind(
                         listView.widthProperty().subtract(20)
                 );*/
-                view.getView().setPrefWidth(370);
+                view.getView().setPrefWidth(size);
                 isBound = true;
             }
 

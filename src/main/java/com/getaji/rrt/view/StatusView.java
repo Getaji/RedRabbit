@@ -1,5 +1,6 @@
 package com.getaji.rrt.view;
 
+import com.getaji.rrt.util.FXHelper;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,12 +20,17 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * javadoc here.
+ * ステータスの表示を行うクラス。
+ *
+ * <h1>参照</h1>
+ * <ul>
+ *     <li>{@link com.getaji.rrt.viewmodel.StatusViewModel}</li>
+ *     <li>{@link com.getaji.rrt.model.StatusModel}</li>
+ * </ul>
  *
  * @author Getaji
  */
@@ -32,25 +38,24 @@ import java.net.URISyntaxException;
 public class StatusView {
 
     // ================================================================
-    // FIELDS
+    // Fields
     // ================================================================
     private final BorderPane borderPane = new BorderPane();
-
     private final ImageView imageView = new ImageView();
-    //private final Label titleLabel = new Label();
     private final BorderPane centerBorderPane = new BorderPane();
     private final HBox titleBox = new HBox();
     private final Text title = new Text();
-    private final Hyperlink date = new Hyperlink("none");
+    private final Hyperlink date;
     private final TextFlow text = new TextFlow();
     private final HBox bottomNodes = new HBox();
     private final ToggleButton buttonRT = new ToggleButton("RT");
     private final ToggleButton buttonFav = new ToggleButton("Fav");
-    private final Hyperlink via = new Hyperlink();
-    private URI uri = null;
+    private final Hyperlink via;
+    private URI dateUri = null;
+    private URI viaUri = null;
 
     // ================================================================
-    // CONSTRUCTORS
+    // Constructors
     // ================================================================
     public StatusView() {
         // ============ Nodes ============
@@ -63,48 +68,44 @@ public class StatusView {
         centerBorderPane.setCenter(text);
         centerBorderPane.setBottom(bottomNodes);
         // --------------------------------
+        date = FXHelper.createHyperlink("none", this::getDateUri);
         titleBox.getChildren().addAll(title, date);
-        title.setFont(Font.font(null, FontWeight.BOLD, 14));
-        date.setAlignment(Pos.CENTER_RIGHT);
+        titleBox.setSpacing(4);
+        title.setFont(Font.font(null, FontWeight.BOLD, title.getFont().getSize()));
         // --------------------------------
+        via = FXHelper.createHyperlink("via", this::getViaURI);
         bottomNodes.getChildren().addAll(buttonRT, buttonFav, via);
         bottomNodes.setAlignment(Pos.CENTER_RIGHT);
         bottomNodes.setSpacing(3);
-        buttonRT.addEventHandler(ActionEvent.ACTION, e -> {
-            if (buttonRT.isSelected()) {
-                buttonRT.setText("RTed");
-            } else {
-                buttonRT.setText("RT");
-            }
-        });
-        buttonFav.addEventHandler(ActionEvent.ACTION, e -> {
-            if (buttonFav.isSelected()) {
-                buttonFav.setText("Faved");
-            } else {
-                buttonFav.setText("Fav");
-            }
-        });
+        bottomNodes.setPadding(new Insets(5, 0, 5, 0));
+        FXHelper.setButtonTextSwitching(buttonRT, "RT", "RTed");
+        FXHelper.setButtonTextSwitching(buttonFav, "Fav", "Faved");
         via.setFont(Font.font(via.getFont().getSize() - 3));
-        via.setOnAction(e -> {
-            try {
-                if (uri != null) {
-                    java.awt.Desktop.getDesktop().browse(uri);
-                }
-            } catch (IOException e1) {
-                log.error("Failed open browser " + e1.getMessage());
-            }
-        });
         // ================================
-        //borderPane.setPrefHeight(titleLabel.getHeight() + textFlow.getHeight());
     }
 
     // ================================================================
-    // METHODS
+    // Setters
     // ================================================================
-
-    // SETTERS ====================================
     public StatusView setTitle(String title) {
         this.title.setText(title);
+        return this;
+    }
+
+    public StatusView setDate(String date) {
+        this.date.setText(date);
+        return this;
+    }
+
+    public StatusView setDate(String date, String url) {
+        this.date.setText(date);
+        if (url != null && !url.isEmpty()) {
+            try {
+                this.dateUri = new URI(url);
+            } catch (URISyntaxException e) {
+                log.error("URISyntaxException " + e.getMessage());
+            }
+        }
         return this;
     }
 
@@ -134,11 +135,21 @@ public class StatusView {
         this.via.setText("via " + text);
         if (url != null && !url.isEmpty()) {
             try {
-                this.uri = new URI(url);
+                this.viaUri = new URI(url);
             } catch (URISyntaxException e) {
                 log.error("URISyntaxException " + e.getMessage());
             }
         }
+        return this;
+    }
+
+    public StatusView setRTButtonSelected(boolean selected) {
+        buttonRT.setSelected(selected);
+        return this;
+    }
+
+    public StatusView setFavButtonSelected(boolean selected) {
+        buttonFav.setSelected(selected);
         return this;
     }
 
@@ -152,7 +163,9 @@ public class StatusView {
         return this;
     }
 
-    // GETTERS ====================================
+    // ================================================================
+    // Getters
+    // ================================================================
     public Pane getView() {
         return borderPane;
     }
@@ -163,5 +176,13 @@ public class StatusView {
 
     public boolean isPushedFav() {
         return buttonFav.isSelected();
+    }
+
+    public URI getViaURI() {
+        return viaUri;
+    }
+
+    public URI getDateUri() {
+        return dateUri;
     }
 }

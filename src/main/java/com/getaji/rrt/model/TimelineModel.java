@@ -17,7 +17,7 @@ public class TimelineModel {
     // Fields
     // ================================================================
     private final List<StatusViewModel> statuses = new ArrayList<>();
-    private final Wrapper<Double> width = Wrapper.wrap(400d);
+    private final Wrapper<Double> width = Wrapper.wrap(370d);
     private String name = "None";
 
     // ================================================================
