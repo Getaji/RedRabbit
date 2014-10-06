@@ -1,10 +1,12 @@
 package com.getaji.rrt.view;
 
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -61,6 +63,16 @@ public class MainWindowView {
         statusBox.getChildren().addAll(statusImage, statusLabel);
         statusBox.setSpacing(5);
         statusBox.maxWidthProperty().bind(stage.widthProperty().divide(3));
+    }
+
+    public MainWindowView addTextAreaHandler(EventHandler<KeyEvent> handler) {
+        textArea.addEventHandler(KeyEvent.KEY_RELEASED, handler);
+        return this;
+    }
+
+    public MainWindowView setInputText(String text) {
+        textArea.setText(text);
+        return this;
     }
 
     public MainWindowView addTimeline(TimelineView timelineView) {
