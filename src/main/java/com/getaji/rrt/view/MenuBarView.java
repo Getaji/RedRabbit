@@ -1,6 +1,7 @@
 package com.getaji.rrt.view;
 
 import com.getaji.rrt.view.menus.AccountMenu;
+import com.getaji.rrt.view.menus.DebugMenu;
 
 /**
  * javadoc here.
@@ -12,7 +13,8 @@ public class MenuBarView extends javafx.scene.control.MenuBar {
         super();
 
         getMenus().addAll(
-                new AccountMenu()
+                new AccountMenu().getMenu(),
+                new DebugMenu().getMenu()
         );
         //
     }

@@ -1,16 +1,21 @@
 package com.getaji.rrt.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
- * 値を包むクラスです。{@link java.util.Optional}への変換も可能です。
+ * ミュータブルなコンテナオブジェクトです。{@link java.util.Optional}への変換も可能です。
+ * nullを許可しな{@link #wrap(Object)}で生成されたWrapperインスタンスはset時はnull値を許可します。
  *
  * @author Getaji
  */
 public class Wrapper<T> {
 
-    private T pushObj = null;
     private T obj;
+    private final List<Consumer<Wrapper<T>>> handlers = new ArrayList<>();
+    private final List<Wrapper<T>> bindWrappers = new ArrayList<>();
 
     // ======== STATIC
 
@@ -38,13 +43,17 @@ public class Wrapper<T> {
         return new Wrapper<>(obj);
     }
 
+    public static <O> Wrapper<O> empty() {
+        return wrapNullable(null);
+    }
+
     // ======== CONSTRUCTOR
 
     /**
      * オブジェクトを包んだWrapperインスタンスを生成します。null値は許可されます。
      * @param obj 包むオブジェクト
      */
-    public Wrapper(T obj) {
+    private Wrapper(T obj) {
         this.obj = obj;
     }
 
@@ -58,6 +67,14 @@ public class Wrapper<T> {
         return obj;
     }
 
+    public List<Consumer<Wrapper<T>>> getHandlers() {
+        return handlers;
+    }
+
+    public List<Wrapper<T>> getBindWrappers() {
+        return bindWrappers;
+    }
+
     // ======== SETTER
 
     /**
@@ -67,6 +84,12 @@ public class Wrapper<T> {
      */
     public Wrapper<T> set(T obj) {
         this.obj = obj;
+        for (Consumer<Wrapper<T>> handler : handlers) {
+            handler.accept(this);
+        }
+        for (Wrapper<T> bindWrapper : bindWrappers) {
+            bindWrapper.set(obj);
+        }
         return this;
     }
 
@@ -77,7 +100,7 @@ public class Wrapper<T> {
      */
     public Wrapper<T> setIfNull(T obj) {
         if (this.obj == null) {
-            this.obj = obj;
+            set(obj);
         }
         return this;
     }
@@ -89,7 +112,7 @@ public class Wrapper<T> {
      */
     public Wrapper<T> setIfPresent(T obj) {
         if (this.obj != null) {
-            this.obj = obj;
+            set(obj);
         }
         return this;
     }
@@ -103,29 +126,33 @@ public class Wrapper<T> {
         if (obj == null) {
             throw new NullPointerException();
         }
-        this.obj = obj;
+        set(obj);
         return this;
     }
 
-    // ======== PUSH/MARGE
-
-    /**
-     * オブジェクトを保留状態でセットします。保留されたオブジェクトは{@link Wrapper#marge()}が呼び出されるまで反映されません。
-     * @param obj オブジェクト
-     * @return 自身のインスタンス
-     */
-    public Wrapper<T> push(T obj) {
-        this.pushObj = obj;
+    public Wrapper<T> addValueSetHandler(Consumer<Wrapper<T>> handler) {
+        handlers.add(handler);
         return this;
     }
 
-    /**
-     * {@link Wrapper#push(Object)}でセットされた保留状態のオブジェクトを反映します。
-     * @return 自身のインスタンス
-     */
-    public Wrapper<T> marge() {
-        obj = pushObj;
+    public Wrapper<T> removeValueSetHandler(Consumer<Wrapper<T>> handler) {
+        handlers.remove(handler);
         return this;
+    }
+
+    public boolean bindTo(Wrapper<T> wrapper) {
+        for (Wrapper<T> wrapped : bindWrappers) {
+            if (wrapped.bindWrappers.contains(this)) {
+                return false;
+            }
+        }
+        wrapper.bindWrappers.add(this);
+        return true;
+    }
+
+    public boolean unbind(Wrapper<T> wrapper) {
+        this.bindWrappers.remove(wrapper);
+        return true;
     }
 
     // ======== OPTIONAL

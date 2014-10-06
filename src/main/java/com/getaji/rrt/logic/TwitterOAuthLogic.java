@@ -40,7 +40,7 @@ public class TwitterOAuthLogic {
                 Twitter twitter = connector.getTwitter();
                 try {
                     DataSaveLogic.saveToken(connector.getAccessToken(), twitter.getId());
-                    MainLogic.MODEL_ADAPTER.getAccountsModel().addTwitter(twitter);
+                    // TODO MainLogic.MODEL_ADAPTER.getAccountsModel().addTwitter(twitter);
                     success.set(Boolean.TRUE);
                 } catch (IOException e) {
                     log.error("データの保存に失敗。");

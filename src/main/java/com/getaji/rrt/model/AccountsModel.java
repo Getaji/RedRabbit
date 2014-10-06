@@ -1,9 +1,9 @@
 package com.getaji.rrt.model;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -12,14 +12,38 @@ import java.util.Set;
  * @author Getaji
  */
 public class AccountsModel {
-    public Set<Twitter> twitters;
+    @Getter private Set<Account> accounts = new HashSet<>();
+    @Getter @Setter private Account currentAccount;
 
-    public void addTwitter(AccessToken accessToken) {
-        TwitterFactory factory = new TwitterFactory();
-        addTwitter(factory.getInstance(accessToken));
+    public void addAccount(Account account) {
+        if (accounts.isEmpty()) {
+            currentAccount = account;
+        }
+
+        accounts.add(account);
     }
 
-    public void addTwitter(Twitter twitter) {
-        twitters.add(twitter);
+    /**
+     * 指定したscreenNameを持つAccountインスタンスを返します。存在しない場合はnullを返します。
+     * @param screenName
+     * @return
+     */
+    public Account getAccount(String screenName) {
+        for (Account account : accounts) {
+            String _screenName = account.getScreenName();
+            if (screenName.equals(_screenName)) {
+                return account;
+            }
+        }
+        return null;
+    }
+
+    public Account getAccount(long id) {
+        for (Account account : accounts) {
+            if (id == account.getId()) {
+                return account;
+            }
+        }
+        return null;
     }
 }

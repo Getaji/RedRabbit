@@ -1,7 +1,7 @@
 package com.getaji.rrt.view;
 
-import com.getaji.rrt.logic.MainLogic;
 import com.getaji.rrt.logic.TwitterOAuthLogic;
+import com.getaji.rrt.model.StaticObjects;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,11 +14,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * javadoc here.
@@ -56,6 +53,8 @@ public class AccountManageView extends Stage {
                 createButton("アカウントの編集", null),
                 createButton("アカウントの削除", null)
         );
+
+        loadAccounts();
     }
 
     public static void showWindow() {
@@ -76,13 +75,8 @@ public class AccountManageView extends Stage {
 
     public void loadAccounts() {
         listView.getItems().clear();
-        Set<Twitter> twitters = MainLogic.MODEL_ADAPTER.getAccountsModel().twitters;
-        twitters.forEach(twitter -> {
-            try {
-                listView.getItems().add(twitter.getScreenName());
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
+        StaticObjects.ACCOUNTS.getAccounts().forEach(twitter -> {
+            listView.getItems().add(twitter.getScreenName());
         });
     }
 }
