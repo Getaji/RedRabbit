@@ -103,8 +103,8 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
             } catch (URISyntaxException e) {
                 textNodes.add(new Text(link.getDisplay()));
             }
-            lastDeleteLength = lastDeleteLength + link.getEnd();
-            textBuilder.delete(0, link.getEnd());
+            lastDeleteLength = link.getEnd() - lastDeleteLength;
+            textBuilder.delete(0, lastDeleteLength);
         }
         if (0 < textBuilder.length()) {
             textNodes.add(new Text(textBuilder.toString()));
@@ -135,6 +135,7 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
     }
 
     private List<LinkContainer> loadTextNodes() {
+        Status status = this.status.isRetweet() ? this.status.getRetweetedStatus() : this.status;
         List<LinkContainer> links = new ArrayList<>();
         for (URLEntity urlEntity : status.getURLEntities()) {
             links.add(new LinkContainer(
