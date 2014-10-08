@@ -28,14 +28,13 @@ public class MainWindowViewModel {
         view.addTextAreaHandler(e -> {
             log.debug(e.getCode());
             if (e.isControlDown() && e.getCode() == KeyCode.ENTER) {
+                String inputText = view.getInputText();
                 try {
-                    StaticObjects.getCurrentTwitter().updateStatus(
-                            view.getInputText()
-                    );
+                    StaticObjects.getCurrentTwitter().updateStatus(inputText);
                     view.setInputText("");
-                    setWindowStatus(WindowStatusType.SUCCESS, "ツイートに成功:" + view.getInputText());
+                    setWindowStatus(WindowStatusType.SUCCESS, "ツイートに成功:" + inputText);
                 } catch (TwitterException e1) {
-                    setWindowStatus(WindowStatusType.ERROR, "ツイートに失敗:" + view.getInputText());
+                    setWindowStatus(WindowStatusType.ERROR, "ツイートに失敗:" + inputText);
                     log.error(e1);
                 }
             }
