@@ -6,8 +6,7 @@ import com.getaji.rrt.logic.twitter.TwitterConnector;
 import com.getaji.rrt.model.Account;
 import com.getaji.rrt.model.StaticObjects;
 import com.getaji.rrt.model.WindowStatusType;
-import com.getaji.rrt.util.StatusViewModelFactory;
-import com.getaji.rrt.view.TimelineView;
+import com.getaji.rrt.util.ui.StatusBuilder;
 import com.getaji.rrt.viewmodel.MainWindowViewModel;
 import com.getaji.rrt.viewmodel.StatusViewModel;
 import com.getaji.rrt.viewmodel.TimelineViewModel;
@@ -21,7 +20,6 @@ import twitter4j.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * javadoc here.
@@ -68,14 +66,13 @@ public class Main extends Application {
         StaticObjects.getTwitterEventDispatcher().addHandler(
                 OnFavoriteEvent.class, e -> Platform.runLater(() -> {
                     if (e.getSource().getId() != StaticObjects.getCurrentAccount().getId()) {
-                        StatusViewModel statusViewModel =
-                                StatusViewModelFactory.createFromTwitter(
-                                        e.getFavoritedStatus());
+                        StatusBuilder builder = StatusBuilder.twitter(
+                                e.getFavoritedStatus());
                         String name = e.getSource().getName();
                         String screenName = e.getSource().getScreenName();
                         String title = String.format("%s @%sにふぁぼられました", name, screenName);
-                        statusViewModel.getModel().setTitle(title);
-                        eventsTimeline.addStatus(statusViewModel);
+                        builder.getBuilder().setTitle(title);
+                        eventsTimeline.addStatus(builder.buildViewModel());
                     }
                 }));
         ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {

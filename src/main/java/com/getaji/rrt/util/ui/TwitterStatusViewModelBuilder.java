@@ -1,18 +1,17 @@
-package com.getaji.rrt.util;
+package com.getaji.rrt.util.ui;
 
 import com.getaji.rrt.model.StatusModel;
+import com.getaji.rrt.util.DateTimeUtil;
 import com.getaji.rrt.viewmodel.StatusViewModel;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.text.Text;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 import twitter4j.*;
 
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,9 +23,11 @@ import java.util.regex.Pattern;
  *
  * @author Getaji
  */
-@Log4j2
-public class StatusViewModelFactory {
+final class TwitterStatusViewModelBuilder implements StatusBuilder {
 
+    // ================================================================
+    // Classes
+    // ================================================================
     @Getter
     private static class LinkContainer implements Comparable<LinkContainer> {
         private final String display;
@@ -49,22 +50,33 @@ public class StatusViewModelFactory {
         }
     }
 
+    // ================================================================
+    // Static fields
+    // ================================================================
     private static final Pattern viaPattern = Pattern.compile("^\\<a href=\"(.+)\" rel=\".+\"\\>(.+)\\</a\\>$");
-    DateTimeFormatter shortDateTimeFormatter = DateTimeFormatter.ofPattern("");
     private static final String dateFormat = "yy:MM:DD HH:mm:ss";
 
-    public static StatusViewModel createSimple(String title, String text) {
-        return new StatusViewModel(StatusModel.builder()
-                .setIconUrl("icon_x48.png")
-                .setTitle(title)
-                .setText(text)
-                .setVia("google")
-                .build()
-        );
+    // ================================================================
+    // Static methods
+    // ================================================================
+    public static TwitterStatusViewModelBuilder newInstance(Status status) {
+        return new TwitterStatusViewModelBuilder(status);
     }
 
-    public static StatusViewModel createFromTwitter(Status status) {
-        // ================================
+    // ================================================================
+    // Fields
+    // ================================================================
+    private final Status status;
+    private final StatusModel.StatusModelBuilder builder;
+    private final List<Node> textNodes;
+
+    // ================================================================
+    // Constructors
+    // ================================================================
+    private TwitterStatusViewModelBuilder(Status status) {
+        this.status = status;
+        builder = StatusModel.builder();
+        // --------------------------------
         boolean retweeted = status.isRetweet();
         User retweeter = status.getUser();
         User user = retweeted ? status.getRetweetedStatus().getUser() : status.getUser();
@@ -73,30 +85,8 @@ public class StatusViewModelFactory {
         // --------------------------------
         String title = String.format("%s @%s", user.getName(), user.getScreenName());
         // --------------------------------
-        List<Node> textNodes = new ArrayList<>();
-        List<LinkContainer> links = new ArrayList<>();
-        for (URLEntity urlEntity : status.getURLEntities()) {
-            links.add(new LinkContainer(
-                    urlEntity.getExpandedURL(), urlEntity.getExpandedURL(),
-                    urlEntity.getStart(), urlEntity.getEnd()));
-        }
-        for (MediaEntity mediaEntity : status.getExtendedMediaEntities()) {
-            links.add(new LinkContainer(
-                    mediaEntity.getDisplayURL(), mediaEntity.getExpandedURL(),
-                    mediaEntity.getStart(), mediaEntity.getEnd()));
-        }
-        for (HashtagEntity hashtagEntity : status.getHashtagEntities()) {
-            String hashtag = hashtagEntity.getText();
-            String link = String.format("https://twitter.com/hashtag/%s?src=hash", hashtag);
-            links.add(new LinkContainer("#" + hashtag, link,
-                    hashtagEntity.getStart(), hashtagEntity.getEnd()));
-        }
-        for (UserMentionEntity mentionEntity : status.getUserMentionEntities()) {
-            String sn = mentionEntity.getScreenName();
-            String link = "https://twitter.com/" + sn;
-            links.add(new LinkContainer("@" + sn, link,
-                    mentionEntity.getStart(), mentionEntity.getEnd()));
-        }
+        textNodes = new ArrayList<>();
+        List<LinkContainer> links = loadTextNodes();
         Collections.sort(links);
         StringBuilder textBuilder = new StringBuilder(status.getText());
         int lastDeleteLength = 0;
@@ -131,8 +121,7 @@ public class StatusViewModelFactory {
         String via = viaMatcher.group(2);
         String viaUrl = viaMatcher.group(1);
         // --------------------------------
-        return new StatusViewModel(StatusModel.builder()
-                .setTwitterStatus(true)
+        builder.setTwitterStatus(true)
                 .setId(status.getId())
                 .setIconUrl(user.getProfileImageURL())
                 .setSubIconUrl(retweeted ? retweeter.getMiniProfileImageURL() : "")
@@ -142,8 +131,48 @@ public class StatusViewModelFactory {
                 .setRetweets(status.getRetweetCount())
                 .setFavorites(status.getFavoriteCount())
                 .setVia(via)
-                .setViaUrl(viaUrl)
-                .build()
-        ).setTextNodes(textNodes, status.getText());
+                .setViaUrl(viaUrl);
+    }
+
+    private List<LinkContainer> loadTextNodes() {
+        List<LinkContainer> links = new ArrayList<>();
+        for (URLEntity urlEntity : status.getURLEntities()) {
+            links.add(new LinkContainer(
+                    urlEntity.getExpandedURL(), urlEntity.getExpandedURL(),
+                    urlEntity.getStart(), urlEntity.getEnd()));
+        }
+        for (MediaEntity mediaEntity : status.getExtendedMediaEntities()) {
+            links.add(new LinkContainer(
+                    mediaEntity.getDisplayURL(), mediaEntity.getExpandedURL(),
+                    mediaEntity.getStart(), mediaEntity.getEnd()));
+        }
+        for (HashtagEntity hashtagEntity : status.getHashtagEntities()) {
+            String hashtag = hashtagEntity.getText();
+            String link = String.format("https://twitter.com/hashtag/%s?src=hash", hashtag);
+            links.add(new LinkContainer("#" + hashtag, link,
+                    hashtagEntity.getStart(), hashtagEntity.getEnd()));
+        }
+        for (UserMentionEntity mentionEntity : status.getUserMentionEntities()) {
+            String sn = mentionEntity.getScreenName();
+            String link = "https://twitter.com/" + sn;
+            links.add(new LinkContainer("@" + sn, link,
+                    mentionEntity.getStart(), mentionEntity.getEnd()));
+        }
+        return links;
+    }
+
+    /**
+     * 注意点：最終的に{@link #buildViewModel()}で追加処理を行うため、
+     * ここで取得したbuilderで{@link com.getaji.rrt.model.StatusModel.StatusModelBuilder#build()}を
+     * 呼び出すと不完全なViewModelとなってしまうため、必ず中間処理に留めること。
+     * @return
+     */
+    public StatusModel.StatusModelBuilder getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public StatusViewModel buildViewModel() {
+        return builder.build().createViewModel().setTextNodes(textNodes, status.getText());
     }
 }

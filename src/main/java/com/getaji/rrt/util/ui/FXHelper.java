@@ -1,4 +1,4 @@
-package com.getaji.rrt.util;
+package com.getaji.rrt.util.ui;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Hyperlink;

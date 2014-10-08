@@ -1,7 +1,7 @@
 package com.getaji.rrt.viewmodel;
 
 import com.getaji.rrt.model.TimelineModel;
-import com.getaji.rrt.util.StatusViewModelFactory;
+import com.getaji.rrt.util.ui.StatusBuilder;
 import com.getaji.rrt.view.StatusView;
 import com.getaji.rrt.view.TimelineView;
 import javafx.beans.value.ChangeListener;
@@ -50,7 +50,7 @@ public class TimelineViewModel implements ChangeListener<Number> {
     // Setters
     // ================================================================
     public TimelineViewModel addStatus(Status twitterStatus) {
-        addStatus(StatusViewModelFactory.createFromTwitter(twitterStatus));
+        addStatus(StatusBuilder.twitter(twitterStatus).buildViewModel());
         return this;
     }
 

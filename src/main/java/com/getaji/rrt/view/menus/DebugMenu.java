@@ -1,7 +1,7 @@
 package com.getaji.rrt.view.menus;
 
 import com.getaji.rrt.Main;
-import com.getaji.rrt.util.StatusViewModelFactory;
+import com.getaji.rrt.util.ui.StatusBuilder;
 import com.getaji.rrt.view.StatusView;
 import com.getaji.rrt.viewmodel.StatusViewModel;
 import javafx.scene.control.Menu;
@@ -26,10 +26,10 @@ public class DebugMenu extends AbstractMenuAdapter {
         menu.getItems().addAll(
                 createItem("Statusオブジェクトの追加(_M)", e -> {
                     Main.getInstance().getMainWindowViewModel().addStatusToCurrent(
-                            StatusViewModelFactory.createSimple(
+                            StatusBuilder.simple(
                                     LocalDateTime.now().toString(),
                                     "実行可能なスレッド数に足りない場合、登録したスレッドは実行待ちになる。実行中のスレッドの処理が終わると、待機していたスレッドが実行される"
-                            )
+                            ).buildViewModel()
                     );
                 }, new KeyCharacterCombination("+", KeyCombination.CONTROL_DOWN)),
 

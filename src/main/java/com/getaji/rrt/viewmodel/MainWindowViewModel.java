@@ -3,7 +3,7 @@ package com.getaji.rrt.viewmodel;
 import com.getaji.rrt.model.MainWindowModel;
 import com.getaji.rrt.model.StaticObjects;
 import com.getaji.rrt.model.WindowStatusType;
-import com.getaji.rrt.util.StatusViewModelFactory;
+import com.getaji.rrt.util.ui.StatusBuilder;
 import com.getaji.rrt.view.MainWindowView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -61,7 +61,7 @@ public class MainWindowViewModel {
     }
 
     public MainWindowViewModel addStatusToCurrent(Status twitterStatus) {
-        model.getCurrentTimeline().addStatus(StatusViewModelFactory.createFromTwitter(twitterStatus));
+        model.getCurrentTimeline().addStatus(StatusBuilder.twitter(twitterStatus).buildViewModel());
         return this;
     }
 

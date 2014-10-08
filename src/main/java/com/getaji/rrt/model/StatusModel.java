@@ -2,6 +2,7 @@ package com.getaji.rrt.model;
 
 import com.getaji.rrt.Main;
 import com.getaji.rrt.util.Wrapper;
+import com.getaji.rrt.viewmodel.StatusViewModel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -117,7 +118,14 @@ public class StatusModel {
     }
 
     // ================================================================
-    // Setter
+    // Getters
+    // ================================================================
+    public StatusViewModel createViewModel() {
+        return new StatusViewModel(this);
+    }
+
+    // ================================================================
+    // Setters
     // ================================================================
     // TODO 全フィールド分のハンドラを作る
     public StatusModel addTitleSetHandler(Consumer<Wrapper<String>> handler) {

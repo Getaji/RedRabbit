@@ -1,7 +1,7 @@
 package com.getaji.rrt.view;
 
-import com.getaji.rrt.util.FXFontBuilder;
-import com.getaji.rrt.util.FXHelper;
+import com.getaji.rrt.util.ui.FXFontBuilder;
+import com.getaji.rrt.util.ui.FXHelper;
 import com.getaji.rrt.viewmodel.StatusViewModel;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

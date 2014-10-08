@@ -1,4 +1,4 @@
-package com.getaji.rrt.util;
+package com.getaji.rrt.util.ui;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
