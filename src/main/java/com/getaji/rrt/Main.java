@@ -8,7 +8,6 @@ import com.getaji.rrt.model.StaticObjects;
 import com.getaji.rrt.model.WindowStatusType;
 import com.getaji.rrt.util.ui.StatusBuilder;
 import com.getaji.rrt.viewmodel.MainWindowViewModel;
-import com.getaji.rrt.viewmodel.StatusViewModel;
 import com.getaji.rrt.viewmodel.TimelineViewModel;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -75,19 +74,20 @@ public class Main extends Application {
                         eventsTimeline.addStatus(builder.buildViewModel());
                     }
                 }));
-        ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {
-                    Thread t = new Thread(r);
-                    t.setDaemon(true);
-                    return t;
-                }
-        );
-        executorService.submit((Callable<Void>) () -> {
-            linkTwitter();
-            return null;
-        });
+        daemon(() -> { linkTwitter(true); return null; });
     }
 
-    private void linkTwitter() throws TwitterException {
+    private void daemon(Callable<Void> callable) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        );
+        executorService.submit(callable);
+    }
+
+    private void linkTwitter(boolean connectUS) throws TwitterException {
         TwitterConnector connector = new TwitterConnector();
         connector.setAPIKeys(
                 "oth6oiwapFEgesjI6U9CcD2QC",
@@ -98,25 +98,28 @@ public class Main extends Application {
                 "gAPkvAaoofEBIoiLlgk4ckRo8ySgpEwGFqTIo5INnN4Jw"
         );
         StaticObjects.getAccounts().addAccount(account);
-        TwitterStreamFactory streamFactory = new TwitterStreamFactory(account.getConfiguration());
-        TwitterStream twitterStream = streamFactory.getInstance(account.getAccessToken());
-        twitterStream.addListener(new UserStreamAdapter() {
-            @Override
-            public void onStatus(Status status) {
-                StaticObjects.getStatusCache().set(status);
-                StaticObjects.getTwitterEventDispatcher().onFire(
-                        OnStatusEvent.class, new OnStatusEvent(account, status)
-                );
-            }
 
-            @Override
-            public void onFavorite(User source, User target, Status favoritedStatus) {
-                StaticObjects.getStatusCache().set(favoritedStatus);
-                StaticObjects.getTwitterEventDispatcher().onFire(
-                        OnFavoriteEvent.class, new OnFavoriteEvent(source, target, favoritedStatus)
-                );
-            }
-        });
-        twitterStream.user();
+        if (connectUS) {
+            TwitterStreamFactory streamFactory = new TwitterStreamFactory(account.getConfiguration());
+            TwitterStream twitterStream = streamFactory.getInstance(account.getAccessToken());
+            twitterStream.addListener(new UserStreamAdapter() {
+                @Override
+                public void onStatus(Status status) {
+                    StaticObjects.getStatusCache().set(status);
+                    StaticObjects.getTwitterEventDispatcher().onFire(
+                            OnStatusEvent.class, new OnStatusEvent(account, status)
+                    );
+                }
+
+                @Override
+                public void onFavorite(User source, User target, Status favoritedStatus) {
+                    StaticObjects.getStatusCache().set(favoritedStatus);
+                    StaticObjects.getTwitterEventDispatcher().onFire(
+                            OnFavoriteEvent.class, new OnFavoriteEvent(source, target, favoritedStatus)
+                    );
+                }
+            });
+            twitterStream.user();
+        }
     }
 }
