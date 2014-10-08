@@ -1,5 +1,6 @@
 package com.getaji.rrt.util.ui;
 
+import com.getaji.rrt.util.Processor;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ToggleButton;
@@ -20,23 +21,40 @@ import java.util.function.Supplier;
 @Log4j2
 public class FXHelper {
 
-    public static Hyperlink createHyperlink(String caption, String url) throws URISyntaxException {
-        return createHyperlink(shorten(caption, 32), new URI(url));
+    public static Hyperlink createHyperlink(String caption, Processor processor) {
+        Hyperlink hyperlink = new Hyperlink(caption);
+        hyperlink.setOnAction(e -> processor.process());
+        return hyperlink;
     }
 
-    public static Hyperlink createHyperlink(String caption, URI uri) {
+    public static Hyperlink createHyperlink(String caption, String url,
+                                            Processor... processors)
+            throws URISyntaxException {
+        URI uri = url == null || url.isEmpty() ? null : new URI(url);
+        return createHyperlink(shorten(caption, 32), uri);
+    }
+
+    public static Hyperlink createHyperlink(String caption, URI uri,
+                                            Processor... processors) {
         Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
-            try {
-                Desktop.getDesktop().browse(uri);
-            } catch (IOException exception) {
-                log.error("Can't open uri", exception);
+            if (uri != null) {
+                try {
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException exception) {
+                    log.error("Can't open uri", exception);
+                }
+            }
+            for (Processor processor : processors) {
+                processor.process();
             }
         });
         return hyperlink;
     }
 
-    public static Hyperlink createHyperlink(String caption, Supplier<URI> uriGetter) {
+    public static Hyperlink createHyperlink(String caption,
+                                            Supplier<URI> uriGetter,
+                                            Processor... processors) {
         Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
             try {
@@ -51,7 +69,9 @@ public class FXHelper {
         return hyperlink;
     }
 
-    public static Hyperlink createHyperlink(String caption, URI uri, Consumer<IOException> exceptionConsumer) {
+    public static Hyperlink createHyperlink(String caption, URI uri,
+                                            Consumer<IOException> exceptionConsumer,
+                                            Processor... processors) {
         Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
             try {
@@ -63,7 +83,9 @@ public class FXHelper {
         return hyperlink;
     }
 
-    public static Hyperlink createHyperlink(String caption, Supplier<URI> uriGetter, Consumer<IOException> exceptionConsumer) {
+    public static Hyperlink createHyperlink(String caption,
+                                            Supplier<URI> uriGetter,
+                                            Consumer<IOException> exceptionConsumer, Processor... processors) {
         Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
             try {

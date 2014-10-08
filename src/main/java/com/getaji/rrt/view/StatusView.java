@@ -53,6 +53,7 @@ public class StatusView {
     private final Text title = new Text();
     private final Hyperlink date;
     private final TextFlow text = new TextFlow();
+    private final VBox bottomsBox = new VBox();
     private final BorderPane bottomPane = new BorderPane();
     private final HBox buttonsBox = new HBox();
     private final ToggleButton buttonRT = new ToggleButton("");
@@ -79,7 +80,7 @@ public class StatusView {
         // --------------------------------
         centerBorderPane.setTop(titlePane);
         centerBorderPane.setCenter(text);
-        centerBorderPane.setBottom(bottomPane);
+        centerBorderPane.setBottom(bottomsBox);
         // --------------------------------
         date = FXHelper.createHyperlink("none", this::getDateUri);
         titlePane.setLeft(title);
@@ -88,6 +89,8 @@ public class StatusView {
                 .add(1).weight(FontWeight.BOLD).build());
         date.setAlignment(Pos.CENTER_LEFT);
         // --------------------------------
+        bottomsBox.getChildren().add(bottomPane);
+        bottomsBox.setSpacing(2);
         via = FXHelper.createHyperlink("via", this::getViaURI);
         bottomPane.setLeft(buttonsBox);
         bottomPane.setRight(via);
@@ -206,6 +209,11 @@ public class StatusView {
 
     public StatusView setFavCount(long count) {
         buttonFav.setText(String.valueOf(count));
+        return this;
+    }
+
+    public StatusView addBottomNode(Node node) {
+        bottomsBox.getChildren().add(node);
         return this;
     }
 

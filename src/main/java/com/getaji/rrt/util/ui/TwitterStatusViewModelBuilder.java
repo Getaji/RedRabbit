@@ -1,7 +1,10 @@
 package com.getaji.rrt.util.ui;
 
+import com.getaji.rrt.model.StaticObjects;
 import com.getaji.rrt.model.StatusModel;
 import com.getaji.rrt.util.DateTimeUtil;
+import com.getaji.rrt.view.StatusView;
+import com.getaji.rrt.view.ThumbnailView;
 import com.getaji.rrt.viewmodel.StatusViewModel;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
@@ -32,6 +35,7 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
     private static class LinkContainer implements Comparable<LinkContainer> {
         private final String display;
         private final String link;
+        private Hyperlink hyperlink;
         private final int start;
         private final int end;
 
@@ -40,6 +44,10 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
             this.link = link;
             this.start = start;
             this.end = end;
+        }
+
+        public void setHyperlink(Hyperlink hyperlink) {
+            this.hyperlink = hyperlink;
         }
 
         @Override
@@ -96,9 +104,12 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
                 textNodes.add(new Text(plain));
             }
             try {
-                Hyperlink hyperlink = FXHelper.createHyperlink(
-                        link.getDisplay(), link.getLink()
-                );
+                Hyperlink hyperlink = link.getHyperlink();
+                if (hyperlink == null) {
+                    hyperlink = FXHelper.createHyperlink(
+                            link.getDisplay(), link.getLink()
+                    );
+                }
                 textNodes.add(hyperlink);
             } catch (URISyntaxException e) {
                 textNodes.add(new Text(link.getDisplay()));
@@ -146,6 +157,7 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
             links.add(new LinkContainer(
                     mediaEntity.getDisplayURL(), mediaEntity.getExpandedURL(),
                     mediaEntity.getStart(), mediaEntity.getEnd()));
+            break;
         }
         for (HashtagEntity hashtagEntity : status.getHashtagEntities()) {
             String hashtag = hashtagEntity.getText();
@@ -174,6 +186,18 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
 
     @Override
     public StatusViewModel buildViewModel() {
-        return builder.build().createViewModel().setTextNodes(textNodes, status.getText());
+        final StatusViewModel viewModel = builder.build().createViewModel();
+        viewModel.setTextNodes(textNodes, status.getText());
+        final StatusView view = viewModel.getView();
+        for (MediaEntity mediaEntity : status.getExtendedMediaEntities()) {
+            if (mediaEntity.getType().equals("photo")) {
+                ThumbnailView thumbnail = new ThumbnailView();
+                StaticObjects.getImageCache().request(mediaEntity.getMediaURL(), (loc, img) -> {
+                    thumbnail.setImage(img);
+                });
+                view.addBottomNode(thumbnail.getNode());
+            }
+        }
+        return viewModel;
     }
 }
