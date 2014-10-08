@@ -46,7 +46,7 @@ public class MainWindowView {
         topPane.setCenter(scrollPane);
         topPane.setBottom(bottomToolbar);
         // --------------------------------
-        TitledPane inputPane = new TitledPane("What's happend?", textArea);
+        TitledPane inputPane = new TitledPane("What's happened?", textArea);
         textArea.setWrapText(true);
         accordion.getPanes().addAll(inputPane);
         accordion.setMaxHeight(100);

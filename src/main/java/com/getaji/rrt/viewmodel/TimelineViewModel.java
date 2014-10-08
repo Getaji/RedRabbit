@@ -1,6 +1,7 @@
 package com.getaji.rrt.viewmodel;
 
 import com.getaji.rrt.model.TimelineModel;
+import com.getaji.rrt.view.StatusView;
 import com.getaji.rrt.view.TimelineView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -32,6 +33,20 @@ public class TimelineViewModel implements ChangeListener<Number> {
         model.setName(name);
     }
 
+    // ================================================================
+    // Getters
+    // ================================================================
+    public StatusViewModel getSelectedStatus() {
+        StatusView statusView = view.getSelectedItem();
+        if (statusView == null) {
+            return null;
+        }
+        return statusView.getViewModel();
+    }
+
+    // ================================================================
+    // Setters
+    // ================================================================
     public TimelineViewModel addStatus(StatusViewModel status) {
         model.addStatus(status);
         view.addStatus(status);

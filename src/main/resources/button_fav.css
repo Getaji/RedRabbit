@@ -1,0 +1,11 @@
+.toggle-button {
+  -fx-graphic: url('icons/favorite.png');
+}
+
+.toggle-button:hover {
+  -fx-graphic: url('icons/favorite_hover.png');
+}
+
+.toggle-button:selected {
+  -fx-graphic: url('icons/favorite_on.png');
+}

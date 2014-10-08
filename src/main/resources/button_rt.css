@@ -1,0 +1,11 @@
+.toggle-button {
+  -fx-graphic: url('icons/retweet.png');
+}
+
+.toggle-button:hover {
+  -fx-graphic: url('icons/retweet_hover.png');
+}
+
+.toggle-button:selected {
+  -fx-graphic: url('icons/retweet_on.png');
+}

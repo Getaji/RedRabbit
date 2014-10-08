@@ -1,5 +1,6 @@
 package com.getaji.rrt.model;
 
+import com.getaji.rrt.event.EventDispatcher;
 import com.getaji.rrt.util.ImageCache;
 import com.getaji.rrt.util.StatusCache;
 import twitter4j.Twitter;
@@ -13,12 +14,13 @@ public class StaticObjects {
     private static final AccountsModel ACCOUNTS = new AccountsModel();
     private static final ImageCache IMAGE_CACHE = new ImageCache();
     private static final StatusCache STATUS_CACHE = new StatusCache();
+    private static final EventDispatcher twitterEventDispatcher = new EventDispatcher();
 
-    private static Twitter currentTwitter;
+    private static Account currentAccount;
 
     static {
         ACCOUNTS.addCurrentAccountChangeHandler(wrapper -> {
-            currentTwitter = wrapper.get().getTwitter();
+            currentAccount = wrapper.get();
         });
     }
 
@@ -35,6 +37,14 @@ public class StaticObjects {
     }
 
     public static Twitter getCurrentTwitter() {
-        return currentTwitter;
+        return currentAccount.getTwitter();
+    }
+
+    public static EventDispatcher getTwitterEventDispatcher() {
+        return twitterEventDispatcher;
+    }
+
+    public static Account getCurrentAccount() {
+        return currentAccount;
     }
 }

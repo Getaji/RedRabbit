@@ -3,11 +3,13 @@ package com.getaji.rrt.viewmodel;
 import com.getaji.rrt.model.MainWindowModel;
 import com.getaji.rrt.model.StaticObjects;
 import com.getaji.rrt.model.WindowStatusType;
+import com.getaji.rrt.util.StatusViewModelFactory;
 import com.getaji.rrt.view.MainWindowView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import twitter4j.Status;
 import twitter4j.TwitterException;
 
 /**
@@ -58,12 +60,17 @@ public class MainWindowViewModel {
         return this;
     }
 
+    public MainWindowViewModel addStatusToCurrent(Status twitterStatus) {
+        model.getCurrentTimeline().addStatus(StatusViewModelFactory.createFromTwitter(twitterStatus));
+        return this;
+    }
+
     public TimelineViewModel getCurrentTimeline() {
         return model.getCurrentTimeline();
     }
 
     public MainWindowViewModel setWindowStatus(WindowStatusType type, String status) {
-        view.setWindowStatus(type.getImage(), status);
+        view.setWindowStatus(type.getImage(), status.replace("\n", " "));
         return this;
     }
 }

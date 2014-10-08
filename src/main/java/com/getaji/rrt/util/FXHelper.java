@@ -21,11 +21,11 @@ import java.util.function.Supplier;
 public class FXHelper {
 
     public static Hyperlink createHyperlink(String caption, String url) throws URISyntaxException {
-        return createHyperlink(caption, new URI(url));
+        return createHyperlink(shorten(caption, 32), new URI(url));
     }
 
     public static Hyperlink createHyperlink(String caption, URI uri) {
-        Hyperlink hyperlink = new Hyperlink(caption);
+        Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
             try {
                 Desktop.getDesktop().browse(uri);
@@ -37,10 +37,13 @@ public class FXHelper {
     }
 
     public static Hyperlink createHyperlink(String caption, Supplier<URI> uriGetter) {
-        Hyperlink hyperlink = new Hyperlink(caption);
+        Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
             try {
-                Desktop.getDesktop().browse(uriGetter.get());
+                URI uri = uriGetter.get();
+                if (uri != null) {
+                    Desktop.getDesktop().browse(uriGetter.get());
+                }
             } catch (IOException exception) {
                 log.error("Can't open uri", exception);
             }
@@ -49,7 +52,7 @@ public class FXHelper {
     }
 
     public static Hyperlink createHyperlink(String caption, URI uri, Consumer<IOException> exceptionConsumer) {
-        Hyperlink hyperlink = new Hyperlink(caption);
+        Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
             try {
                 Desktop.getDesktop().browse(uri);
@@ -61,7 +64,7 @@ public class FXHelper {
     }
 
     public static Hyperlink createHyperlink(String caption, Supplier<URI> uriGetter, Consumer<IOException> exceptionConsumer) {
-        Hyperlink hyperlink = new Hyperlink(caption);
+        Hyperlink hyperlink = new Hyperlink(shorten(caption, 32));
         hyperlink.setOnAction(event -> {
             try {
                 Desktop.getDesktop().browse(uriGetter.get());
@@ -70,6 +73,13 @@ public class FXHelper {
             }
         });
         return hyperlink;
+    }
+
+    private static String shorten(String text, int length) {
+        if (length < text.length()) {
+            return text.substring(0, length) + "...";
+        }
+        return text;
     }
 
     public static void setButtonTextSwitching(ToggleButton button, String popped, String pushed) {
