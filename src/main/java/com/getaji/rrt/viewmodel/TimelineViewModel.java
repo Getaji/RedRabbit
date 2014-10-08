@@ -1,12 +1,14 @@
 package com.getaji.rrt.viewmodel;
 
 import com.getaji.rrt.model.TimelineModel;
+import com.getaji.rrt.util.StatusViewModelFactory;
 import com.getaji.rrt.view.StatusView;
 import com.getaji.rrt.view.TimelineView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import twitter4j.Status;
 
 /**
  * javadoc here.
@@ -47,6 +49,11 @@ public class TimelineViewModel implements ChangeListener<Number> {
     // ================================================================
     // Setters
     // ================================================================
+    public TimelineViewModel addStatus(Status twitterStatus) {
+        addStatus(StatusViewModelFactory.createFromTwitter(twitterStatus));
+        return this;
+    }
+
     public TimelineViewModel addStatus(StatusViewModel status) {
         model.addStatus(status);
         view.addStatus(status);

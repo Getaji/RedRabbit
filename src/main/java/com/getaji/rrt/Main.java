@@ -7,6 +7,7 @@ import com.getaji.rrt.model.Account;
 import com.getaji.rrt.model.StaticObjects;
 import com.getaji.rrt.model.WindowStatusType;
 import com.getaji.rrt.util.StatusViewModelFactory;
+import com.getaji.rrt.view.TimelineView;
 import com.getaji.rrt.viewmodel.MainWindowViewModel;
 import com.getaji.rrt.viewmodel.StatusViewModel;
 import com.getaji.rrt.viewmodel.TimelineViewModel;
@@ -55,14 +56,14 @@ public class Main extends Application {
         log.trace("Starting...");
         instance = this;
         mainWindowViewModel = new MainWindowViewModel(stage);
-        mainWindowViewModel.addTimeline("Home");
+        TimelineViewModel homeTimeline = mainWindowViewModel.addTimeline("Home");
         TimelineViewModel eventsTimeline = mainWindowViewModel.addTimeline("Events");
         stage.show();
         mainWindowViewModel.setWindowStatus(WindowStatusType.PLAIN, "起動成功");
         log.trace("Starting complete");
         StaticObjects.getTwitterEventDispatcher().addHandler(
                 OnStatusEvent.class, e -> Platform.runLater(() -> {
-                    mainWindowViewModel.addStatusToCurrent(e.getStatus());
+                    homeTimeline.addStatus(e.getStatus());
                 }));
         StaticObjects.getTwitterEventDispatcher().addHandler(
                 OnFavoriteEvent.class, e -> Platform.runLater(() -> {
