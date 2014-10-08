@@ -162,11 +162,13 @@ public class StatusView {
 
     public StatusView setImage(Image image) {
         this.imageView.setImage(image);
+        this.iconBox.requestLayout();
         return this;
     }
 
     public StatusView setSubImage(Image image) {
         this.subImageView.setImage(image);
+        this.iconBox.requestLayout();
         return this;
     }
 
@@ -214,6 +216,11 @@ public class StatusView {
 
     public StatusView addBottomNode(Node node) {
         bottomsBox.getChildren().add(node);
+        return this;
+    }
+
+    public StatusView update() {
+        bottomsBox.requestLayout();
         return this;
     }
 

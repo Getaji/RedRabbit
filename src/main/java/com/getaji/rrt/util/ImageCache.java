@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import lombok.NonNull;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
 /**
@@ -16,6 +18,16 @@ public class ImageCache {
     private final Map<String, List<BiConsumer<String, Image>>> requester = new HashMap<>();
 
     private final Set<String> loadingUrls = new HashSet<>();
+
+    private final ExecutorService executorService;
+
+    public ImageCache() {
+        executorService = Executors.newCachedThreadPool(r -> {
+                    Thread thread = new Thread(r);
+                    thread.setDaemon(true);
+                    return thread;
+                });
+    }
 
     public synchronized void request(String imageLocation, BiConsumer<String, Image> consumer) {
         Image image = images.get(imageLocation);
@@ -40,8 +52,10 @@ public class ImageCache {
     }
 
     private void load(String imageLocation) {
-        Image image = new Image(imageLocation);
-        put(imageLocation, image);
-        requester.get(imageLocation).forEach(c -> c.accept(imageLocation, image));
+        executorService.submit(() -> {
+            Image image = new Image(imageLocation);
+            put(imageLocation, image);
+            requester.get(imageLocation).forEach(c -> c.accept(imageLocation, image));
+        });
     }
 }

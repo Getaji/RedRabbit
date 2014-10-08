@@ -1,9 +1,10 @@
 package com.getaji.rrt.view;
 
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
@@ -15,8 +16,6 @@ public class ImageViewer {
     private final Stage stage;
     private final BorderPane borderPane = new BorderPane();
     private final ImageView imageView = new ImageView();
-    private final HBox imagesBox = new HBox();
-    //private final List<Image> images = new ArrayList<>()
 
     public ImageViewer() {
         stage = new Stage();
@@ -25,10 +24,22 @@ public class ImageViewer {
         stage.setWidth(400);
         stage.setWidth(400);
         borderPane.setCenter(imageView);
-    }/*
+        BorderPane.setAlignment(imageView, Pos.CENTER);
+        imageView.setPreserveRatio(true);
+    }
 
-    public ImageViewer addImage(Image image) {
-        ImageView thumbnail = new ImageView(image);
-        thumbnail.
-    }*/
+    public ImageViewer setImage(Image image) {
+        imageView.setImage(image);
+        if (image.getWidth() < image.getHeight()) {
+            imageView.setFitHeight(400);
+        } else {
+            imageView.setFitWidth(400);
+        }
+        return this;
+    }
+
+    public ImageViewer show() {
+        stage.show();
+        return this;
+    }
 }

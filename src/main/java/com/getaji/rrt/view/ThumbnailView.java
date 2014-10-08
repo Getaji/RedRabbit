@@ -6,7 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 
 /**
  * javadoc here.
@@ -17,6 +19,7 @@ public class ThumbnailView {
 
     private final BorderPane pane = new BorderPane();
     private final ImageView imageView = new ImageView();
+    private Image plainImage;
     private int height = 64;
 
     public ThumbnailView() {
@@ -32,6 +35,12 @@ public class ThumbnailView {
     }
 
     public ThumbnailView setImage(Image image) {
+        if (plainImage == null) {
+            imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                new ImageViewer().setImage(image).show();
+            });
+        }
+        plainImage = image;
         WritableImage resizeImage = new WritableImage(image.getPixelReader(),
                 0, (int) (image.getHeight() / 2 - height / 2),
                 (int) image.getWidth(), height + 2);
@@ -50,6 +59,10 @@ public class ThumbnailView {
     }
 
     public Node getNode() {
+        return pane;
+    }
+
+    public Pane getPane() {
         return pane;
     }
 }

@@ -43,7 +43,7 @@ public class TimelineView {
                 view.getView().setMaxWidth(size);
                 isBound = true;
             }
-
+            requestLayout();
             this.setGraphic(view.getView());
         }
     }
