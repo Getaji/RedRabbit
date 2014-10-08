@@ -1,12 +1,15 @@
 package com.getaji.rrt.view;
 
+import com.getaji.rrt.util.FXFontBuilder;
 import com.getaji.rrt.util.FXHelper;
+import com.getaji.rrt.viewmodel.StatusViewModel;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -14,7 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -22,6 +25,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 /**
  * ステータスの表示を行うクラス。
@@ -41,46 +45,63 @@ public class StatusView {
     // Fields
     // ================================================================
     private final BorderPane borderPane = new BorderPane();
+    private final VBox iconBox = new VBox();
     private final ImageView imageView = new ImageView();
+    private final ImageView subImageView = new ImageView();
     private final BorderPane centerBorderPane = new BorderPane();
-    private final HBox titleBox = new HBox();
+    private final BorderPane titlePane = new BorderPane();
     private final Text title = new Text();
     private final Hyperlink date;
     private final TextFlow text = new TextFlow();
-    private final HBox bottomNodes = new HBox();
-    private final ToggleButton buttonRT = new ToggleButton("RT");
-    private final ToggleButton buttonFav = new ToggleButton("Fav");
+    private final BorderPane bottomPane = new BorderPane();
+    private final HBox buttonsBox = new HBox();
+    private final ToggleButton buttonRT = new ToggleButton("");
+    private final ToggleButton buttonFav = new ToggleButton("");
+    private final Button buttonMore = new Button("...▼");
     private final Hyperlink via;
+    private final StatusViewModel viewModel;
     private URI dateUri = null;
     private URI viaUri = null;
 
     // ================================================================
     // Constructors
     // ================================================================
-    public StatusView() {
+    public StatusView(StatusViewModel viewModel) {
+        this.viewModel = viewModel;
+
         // ============ Nodes ============
-        borderPane.setLeft(imageView);
+        borderPane.setLeft(iconBox);
         borderPane.setCenter(centerBorderPane);
         // --------------------------------
-        BorderPane.setMargin(imageView, new Insets(3, 5, 0, 0));
+        iconBox.getChildren().addAll(imageView, subImageView);
+        iconBox.setAlignment(Pos.TOP_RIGHT);
+        BorderPane.setMargin(iconBox, new Insets(3, 5, 0, 0));
         // --------------------------------
-        centerBorderPane.setTop(titleBox);
+        centerBorderPane.setTop(titlePane);
         centerBorderPane.setCenter(text);
-        centerBorderPane.setBottom(bottomNodes);
+        centerBorderPane.setBottom(bottomPane);
         // --------------------------------
         date = FXHelper.createHyperlink("none", this::getDateUri);
-        titleBox.getChildren().addAll(title, date);
-        titleBox.setSpacing(4);
-        title.setFont(Font.font(null, FontWeight.BOLD, title.getFont().getSize()));
+        titlePane.setLeft(title);
+        titlePane.setRight(date);
+        title.setFont(FXFontBuilder.of(title.getFont())
+                .add(1).weight(FontWeight.BOLD).build());
+        date.setAlignment(Pos.CENTER_LEFT);
         // --------------------------------
         via = FXHelper.createHyperlink("via", this::getViaURI);
-        bottomNodes.getChildren().addAll(buttonRT, buttonFav, via);
-        bottomNodes.setAlignment(Pos.CENTER_RIGHT);
-        bottomNodes.setSpacing(3);
-        bottomNodes.setPadding(new Insets(5, 0, 5, 0));
-        FXHelper.setButtonTextSwitching(buttonRT, "RT", "RTed");
-        FXHelper.setButtonTextSwitching(buttonFav, "Fav", "Faved");
-        via.setFont(Font.font(via.getFont().getSize() - 3));
+        bottomPane.setLeft(buttonsBox);
+        bottomPane.setRight(via);
+        buttonsBox.getChildren().addAll(buttonRT, buttonFav, buttonMore);
+        buttonsBox.setAlignment(Pos.CENTER_RIGHT);
+        buttonsBox.setSpacing(3);
+        bottomPane.setPadding(new Insets(4, 0, 4, 0));
+        buttonRT.getStylesheets().add("button_rt.css");
+        buttonFav.getStylesheets().add("button_fav.css");
+        buttonMore.addEventHandler(ActionEvent.ACTION, e -> {
+            log.debug(String.format("width:%s height:%s", borderPane.getWidth(), borderPane.getHeight()));
+        });
+        via.setFont(FXFontBuilder.of(via.getFont())
+                .sub(3).build());
         // ================================
     }
 
@@ -126,8 +147,23 @@ public class StatusView {
         return this;
     }
 
+    public StatusView setTextAll(Node... textNode) {
+        text.getChildren().addAll(textNode);
+        return this;
+    }
+
+    public StatusView setTextAll(Collection<Node> textNode) {
+        text.getChildren().addAll(textNode);
+        return this;
+    }
+
     public StatusView setImage(Image image) {
         this.imageView.setImage(image);
+        return this;
+    }
+
+    public StatusView setSubImage(Image image) {
+        this.subImageView.setImage(image);
         return this;
     }
 
@@ -163,6 +199,16 @@ public class StatusView {
         return this;
     }
 
+    public StatusView setRTCount(long count) {
+        buttonRT.setText(String.valueOf(count));
+        return this;
+    }
+
+    public StatusView setFavCount(long count) {
+        buttonFav.setText(String.valueOf(count));
+        return this;
+    }
+
     // ================================================================
     // Getters
     // ================================================================
@@ -184,5 +230,17 @@ public class StatusView {
 
     public URI getDateUri() {
         return dateUri;
+    }
+
+    public double getWidth() {
+        return borderPane.getWidth();
+    }
+
+    public double getHeight() {
+        return borderPane.getHeight();
+    }
+
+    public StatusViewModel getViewModel() {
+        return viewModel;
     }
 }
