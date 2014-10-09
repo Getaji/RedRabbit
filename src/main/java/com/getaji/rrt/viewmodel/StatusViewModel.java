@@ -5,6 +5,7 @@ import com.getaji.rrt.model.StatusModel;
 import com.getaji.rrt.view.StatusView;
 import javafx.scene.Node;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * @author Getaji
  */
+@Log4j2
 public class StatusViewModel {
 
     // ================================================================
@@ -28,6 +30,7 @@ public class StatusViewModel {
         this.model = model;
         StaticObjects.getImageCache().request(model.getIconUrl(), (loc, img) -> {
             view.setImage(img);
+            log.debug(img == null);
         });
         if (!model.getSubIconUrl().isEmpty()) {
             StaticObjects.getImageCache().request(model.getSubIconUrl(), (loc, img) -> {

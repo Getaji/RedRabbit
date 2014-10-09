@@ -1,5 +1,6 @@
 package com.getaji.rrt.util;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import lombok.NonNull;
 
@@ -55,7 +56,10 @@ public class ImageCache {
         executorService.submit(() -> {
             Image image = new Image(imageLocation);
             put(imageLocation, image);
-            requester.get(imageLocation).forEach(c -> c.accept(imageLocation, image));
+            Platform.runLater(() -> {
+                requester.get(imageLocation).forEach(c ->
+                        c.accept(imageLocation, image));
+            });
         });
     }
 }

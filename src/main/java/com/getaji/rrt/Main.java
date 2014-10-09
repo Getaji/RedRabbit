@@ -74,7 +74,7 @@ public class Main extends Application {
                         eventsTimeline.addStatus(builder.buildViewModel());
                     }
                 }));
-        daemon(() -> { linkTwitter(true); return null; });
+        daemon(() -> { linkTwitter(false); return null; });
     }
 
     private void daemon(Callable<Void> callable) {
