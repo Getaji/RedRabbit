@@ -3,6 +3,7 @@ RedRabbit
 だらだら開発しているTwitterクライアント。
 
 ## 環境
+* Windows7 64bit
 * IntelliJ IDEA 13.1.4
 * JDK 1.8.0u20
 * JavaFX8
