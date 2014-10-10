@@ -23,6 +23,13 @@ import java.net.URISyntaxException;
 public class ImageViewerModel {
 
     // ================================================================
+    // Static factory methods
+    // ================================================================
+    public static ImageViewerModel create(ImageViewerView view) {
+        return new ImageViewerModel(view);
+    }
+
+    // ================================================================
     // Static fields
     // ================================================================
     private static File lastSavedLocation;
@@ -40,7 +47,7 @@ public class ImageViewerModel {
     // ================================================================
     // Constructors
     // ================================================================
-    public ImageViewerModel(ImageViewerView view) {
+    private ImageViewerModel(ImageViewerView view) {
         this.view = view;
 
         FileChooser fileChooser = new FileChooser();

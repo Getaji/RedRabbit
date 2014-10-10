@@ -121,7 +121,7 @@ public class StatusModel {
     // Getters
     // ================================================================
     public StatusViewModel createViewModel() {
-        return new StatusViewModel(this);
+        return StatusViewModel.create(this);
     }
 
     // ================================================================

@@ -13,8 +13,15 @@ import java.util.function.Consumer;
  * @author Getaji
  */
 public class AccountsModel {
+
+    public static AccountsModel create() {
+        return new AccountsModel();
+    }
+
     @Getter private Set<Account> accounts = new HashSet<>();
     private Wrapper<Account> currentAccount = Wrapper.empty();
+
+    private AccountsModel() {}
 
     // ================================================================
     // Getter

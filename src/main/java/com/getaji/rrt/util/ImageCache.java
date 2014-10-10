@@ -15,6 +15,11 @@ import java.util.function.BiConsumer;
  * @author Getaji
  */
 public class ImageCache {
+
+    public static ImageCache create() {
+        return new ImageCache();
+    }
+
     private final Map<String, Image> images = new WeakHashMap<>();
     private final Map<String, List<BiConsumer<String, Image>>> requester = new HashMap<>();
 
@@ -22,7 +27,7 @@ public class ImageCache {
 
     private final ExecutorService executorService;
 
-    public ImageCache() {
+    private ImageCache() {
         executorService = Executors.newCachedThreadPool(r -> {
                     Thread thread = new Thread(r);
                     thread.setDaemon(true);

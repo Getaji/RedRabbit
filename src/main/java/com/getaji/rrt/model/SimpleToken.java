@@ -10,6 +10,11 @@ import twitter4j.auth.AccessToken;
  */
 @Data
 public class SimpleToken {
+
+    public static SimpleToken create(AccessToken accessToken) {
+        return new SimpleToken(accessToken);
+    }
+
     private String accessToken;
     private String accessTokenSecret;
 

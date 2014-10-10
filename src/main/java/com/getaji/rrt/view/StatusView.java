@@ -42,6 +42,13 @@ import java.util.Collection;
 public class StatusView {
 
     // ================================================================
+    // Static factory methods
+    // ================================================================
+    public static StatusView create(StatusViewModel viewModel) {
+        return StatusView.create(viewModel);
+    }
+
+    // ================================================================
     // Fields
     // ================================================================
     private final BorderPane borderPane = new BorderPane();

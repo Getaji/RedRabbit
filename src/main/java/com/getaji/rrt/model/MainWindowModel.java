@@ -13,9 +13,16 @@ import java.util.List;
  */
 public class MainWindowModel {
 
+    public static MainWindowModel create() {
+        return new MainWindowModel();
+    }
+
     private final List<TimelineViewModel> timelines = new ArrayList<>();
 
     @Getter private TimelineViewModel currentTimeline;
+
+    private MainWindowModel() {
+    }
 
     public TimelineViewModel addTimeline(TimelineViewModel timeline) {
         if (timelines.size() == 0) {

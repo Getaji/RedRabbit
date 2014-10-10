@@ -18,8 +18,12 @@ import twitter4j.Status;
 @Log4j2
 public class TimelineViewModel implements ChangeListener<Number> {
 
-    @Getter private final TimelineView view = new TimelineView(this);
-    @Getter private final TimelineModel model = new TimelineModel();
+    public static TimelineViewModel create() {
+        return new TimelineViewModel();
+    }
+
+    @Getter private final TimelineView view = TimelineView.create(this);
+    @Getter private final TimelineModel model = TimelineModel.create();
 
     // ================================================================
     // Constructors

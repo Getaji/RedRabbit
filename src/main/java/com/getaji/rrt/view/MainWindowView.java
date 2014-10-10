@@ -22,11 +22,15 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class MainWindowView {
 
+    public static MainWindowView create(Stage primaryStage) {
+        return new MainWindowView(primaryStage);
+    }
+
     private final Stage stage;
     private final Scene scene;
     private final BorderPane topPane = new BorderPane();
         private final VBox topToolbar = new VBox();
-            private final MenuBar menuBar = new MenuBarView();
+            private final MenuBar menuBar = MenuBarView.create();
             private final Accordion accordion = new Accordion();
                 private final TextArea textArea = new TextArea();
         private final ScrollPane scrollPane = new ScrollPane();
@@ -36,7 +40,7 @@ public class MainWindowView {
                 private final ImageView statusImage = new ImageView();
                 private final Label statusLabel = new Label("初期化中...");
 
-    public MainWindowView(Stage stage) {
+    private MainWindowView(Stage stage) {
         this.stage = stage;
         timelines.setSpacing(5);
         scene = new Scene(topPane);

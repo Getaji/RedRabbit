@@ -27,6 +27,10 @@ import java.time.LocalDateTime;
 @Log4j2
 public class DebugMenu extends AbstractMenuAdapter {
 
+    public static DebugMenu create() {
+        return new DebugMenu();
+    }
+
     private final Menu menu;
     public DebugMenu() {
         menu = createMenu("デバッグ(_D)");

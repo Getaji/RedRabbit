@@ -24,9 +24,15 @@ import java.util.Optional;
  */
 @Log4j2
 public class AccountManageView extends Stage {
+
+    public static AccountManageView create() {
+        return new AccountManageView();
+    }
+
     private final BorderPane topPane = new BorderPane();
     private final ListView<String> listView = new ListView<>();
     private final VBox buttonsBox = new VBox();
+
     public AccountManageView() {
         setTitle("アカウントの管理");
         setScene(new Scene(topPane));
@@ -58,7 +64,7 @@ public class AccountManageView extends Stage {
     }
 
     public static void showWindow() {
-        new AccountManageView().show();
+        AccountManageView.create().show();
     }
 
     public Button createButton(String name, EventHandler<ActionEvent> eventHandler) {

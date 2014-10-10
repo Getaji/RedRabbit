@@ -49,6 +49,13 @@ public class TimelineView {
     }
 
     // ================================================================
+    // Static factory methods
+    // ================================================================
+    public static TimelineView create(TimelineViewModel viewModel) {
+        return new TimelineView(viewModel);
+    }
+
+    // ================================================================
     // Fields
     // ================================================================
     private final ListView<StatusView> listView = new ListView<>();
@@ -60,7 +67,7 @@ public class TimelineView {
     // ================================================================
     // Constructors
     // ================================================================
-    public TimelineView(TimelineViewModel viewModel) {
+    private TimelineView(TimelineViewModel viewModel) {
         this.viewModel = viewModel;
         listView.setPrefWidth(400);
         listView.setCellFactory(view -> new TimelineStatusCell());

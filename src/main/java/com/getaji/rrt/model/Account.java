@@ -14,6 +14,12 @@ import twitter4j.conf.Configuration;
  */
 @Getter
 public class Account {
+
+    public static Account create(Twitter twitter, AccessToken accessToken, Configuration configuration)
+            throws TwitterException {
+        return new Account(twitter, accessToken, configuration);
+    }
+
     private final Twitter twitter;
     private final AccessToken accessToken;
     private final String tokenString;
@@ -23,7 +29,7 @@ public class Account {
     private final String screenName;
     private final User user;
 
-    public Account(Twitter twitter, AccessToken accessToken, Configuration configuration) throws TwitterException {
+    private Account(Twitter twitter, AccessToken accessToken, Configuration configuration) throws TwitterException {
         this.twitter = twitter;
         this.accessToken = accessToken;
         this.tokenString = accessToken.getToken();

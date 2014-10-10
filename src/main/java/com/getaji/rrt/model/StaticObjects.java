@@ -11,10 +11,11 @@ import twitter4j.Twitter;
  * @author Getaji
  */
 public class StaticObjects {
-    private static final AccountsModel ACCOUNTS = new AccountsModel();
-    private static final ImageCache IMAGE_CACHE = new ImageCache();
-    private static final StatusCache STATUS_CACHE = new StatusCache();
-    private static final EventDispatcher twitterEventDispatcher = new EventDispatcher();
+
+    private static final AccountsModel ACCOUNTS = AccountsModel.create();
+    private static final ImageCache IMAGE_CACHE = ImageCache.create();
+    private static final StatusCache STATUS_CACHE = StatusCache.create();
+    private static final EventDispatcher twitterEventDispatcher = EventDispatcher.create();
 
     private static Account currentAccount;
 
@@ -47,4 +48,6 @@ public class StaticObjects {
     public static Account getCurrentAccount() {
         return currentAccount;
     }
+
+    private StaticObjects() {}
 }

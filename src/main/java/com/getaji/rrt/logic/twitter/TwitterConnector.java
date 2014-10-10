@@ -16,12 +16,23 @@ import twitter4j.conf.ConfigurationBuilder;
  * @author Getaji
  */
 public class TwitterConnector {
+
+    // ================================================================
+    // Static factory methods
+    // ================================================================
+    public static TwitterConnector create() throws TwitterException {
+        return new TwitterConnector();
+    }
+
+    // ================================================================
+    // Fields
+    // ================================================================
     private Twitter twitter;
     private final ConfigurationBuilder configurationBuilder;
     private RequestToken requestToken;
     @Getter private AccessToken accessToken;
 
-    public TwitterConnector() throws TwitterException {
+    private TwitterConnector() throws TwitterException {
         configurationBuilder = new ConfigurationBuilder();
     }
 
@@ -46,7 +57,7 @@ public class TwitterConnector {
         TwitterFactory twitterFactory = new TwitterFactory(configuration);
         AccessToken accessToken = new AccessToken(token, token_secret);
         twitter = twitterFactory.getInstance(accessToken);
-        Account account = new Account(twitter, accessToken, configuration);
+        Account account = Account.create(twitter, accessToken, configuration);
         afterOAuth(accessToken);
         return account;
     }

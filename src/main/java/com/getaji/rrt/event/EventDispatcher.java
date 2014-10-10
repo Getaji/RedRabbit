@@ -13,7 +13,13 @@ import java.util.function.Consumer;
  */
 public class EventDispatcher {
 
+    public static EventDispatcher create() {
+        return new EventDispatcher();
+    }
+
     private final Map<Class<? extends Event>, List<Consumer<Event>>> handlers = new HashMap<>();
+
+    private EventDispatcher() {}
 
     public <T extends Event> void onFire(Class<T> eventClass, T instance) {
         List<Consumer<Event>> handlers = this.handlers.get(eventClass);

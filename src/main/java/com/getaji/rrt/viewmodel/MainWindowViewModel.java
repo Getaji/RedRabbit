@@ -20,11 +20,15 @@ import twitter4j.TwitterException;
 @Log4j2
 public class MainWindowViewModel {
 
-    @Getter private final MainWindowModel model = new MainWindowModel();
+    public static MainWindowViewModel create(Stage primaryStage) {
+        return new MainWindowViewModel(primaryStage);
+    }
+
+    @Getter private final MainWindowModel model = MainWindowModel.create();
     @Getter private final MainWindowView view;
 
-    public MainWindowViewModel(Stage stage) {
-        view = new MainWindowView(stage);
+    private MainWindowViewModel(Stage stage) {
+        view = MainWindowView.create(stage);
         view.addTextAreaHandler(e -> {
             log.debug(e.getCode());
             if (e.isControlDown() && e.getCode() == KeyCode.ENTER) {
@@ -42,7 +46,7 @@ public class MainWindowViewModel {
     }
 
     public TimelineViewModel addTimeline() {
-        TimelineViewModel timeline = new TimelineViewModel();
+        TimelineViewModel timeline = TimelineViewModel.create();
         model.addTimeline(timeline);
         view.addTimeline(timeline.getView());
         return timeline;

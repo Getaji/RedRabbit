@@ -25,7 +25,7 @@ public class TwitterOAuthLogic {
         // TODO がんばれ❤
         Wrapper<TwitterConnector> twitterConnector = Wrapper.wrapNullable(null);
         try {
-            twitterConnector.set(new TwitterConnector());
+            twitterConnector.set(TwitterConnector.create());
         } catch (TwitterException e1) {
             log.error("TwitterConnectorの初期化に失敗。");
             e1.printStackTrace();

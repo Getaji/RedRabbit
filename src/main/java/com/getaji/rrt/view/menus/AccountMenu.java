@@ -13,8 +13,12 @@ import javafx.scene.input.KeyCombination;
 */
 public class AccountMenu extends AbstractMenuAdapter {
 
+    public static AccountMenu create() {
+        return new AccountMenu();
+    }
+
     private final Menu menu;
-    public AccountMenu() {
+    private AccountMenu() {
         menu = createMenu("アカウント(_A)");
 
         menu.getItems().addAll(

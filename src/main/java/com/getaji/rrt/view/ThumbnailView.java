@@ -22,12 +22,16 @@ import java.net.URISyntaxException;
 @Log4j2
 public class ThumbnailView {
 
+    public static ThumbnailView create() {
+        return new ThumbnailView();
+    }
+
     private final BorderPane pane = new BorderPane();
     private final ImageView imageView = new ImageView();
     private Image plainImage;
     private int height = 64;
 
-    public ThumbnailView() {
+    private ThumbnailView() {
         pane.setCenter(imageView);
         BorderPane.setAlignment(imageView, Pos.CENTER);
         imageView.setPreserveRatio(true);

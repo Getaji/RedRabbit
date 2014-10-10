@@ -18,15 +18,22 @@ import java.util.List;
 public class StatusViewModel {
 
     // ================================================================
+    // Static factory methods
+    // ================================================================
+    public static StatusViewModel create(StatusModel model) {
+        return new StatusViewModel(model);
+    }
+
+    // ================================================================
     // Fields
     // ================================================================
-    @Getter private final StatusView view = new StatusView(this);
+    @Getter private final StatusView view = StatusView.create(this);
     @Getter private final StatusModel model;
 
     // ================================================================
     // Constructors
     // ================================================================
-    public StatusViewModel(StatusModel model) {
+    private StatusViewModel(StatusModel model) {
         this.model = model;
         StaticObjects.getImageCache().request(model.getIconUrl(), (loc, img) -> {
             view.setImage(img);

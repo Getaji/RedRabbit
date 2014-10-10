@@ -12,6 +12,12 @@ import java.util.List;
  * @author Getaji
  */
 public class TimelineModel {
+    // ================================================================
+    // Static factory methods
+    // ================================================================
+    public static TimelineModel create() {
+        return new TimelineModel();
+    }
 
     // ================================================================
     // Fields
@@ -19,6 +25,12 @@ public class TimelineModel {
     private final List<StatusViewModel> statuses = new ArrayList<>();
     private final Wrapper<Double> width = Wrapper.wrap(370d);
     private String name = "None";
+
+    // ================================================================
+    // Constructors
+    // ================================================================
+    private TimelineModel() {
+    }
 
     // ================================================================
     // Getters

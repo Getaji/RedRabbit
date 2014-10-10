@@ -11,10 +11,14 @@ import twitter4j.Status;
  */
 public class OnStatusEvent implements Event {
 
+    public static OnStatusEvent create(Account account, Status status) {
+        return new OnStatusEvent(account, status);
+    }
+
     @Getter private final Account account;
     @Getter private final Status status;
 
-    public OnStatusEvent(Account account, Status status) {
+    private OnStatusEvent(Account account, Status status) {
         this.account = account;
         this.status = status;
     }

@@ -16,16 +16,17 @@ import java.net.URISyntaxException;
  */
 @Log4j2
 public class ImageViewer {
-    private final ImageViewerView view;
-    private final ImageViewerModel model;
 
     public static ImageViewer create() {
         return new ImageViewer();
     }
 
+    private final ImageViewerView view;
+    private final ImageViewerModel model;
+
     public ImageViewer() {
-        view = new ImageViewerView();
-        model = new ImageViewerModel(view);
+        view = ImageViewerView.create();
+        model = ImageViewerModel.create(view);
 
         view.addReloadButtonHandler(e -> {
             StaticObjects.getImageCache().request("icons/loading.gif", (loc, img) -> {

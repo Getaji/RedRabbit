@@ -52,7 +52,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         log.trace("Starting...");
         instance = this;
-        mainWindowViewModel = new MainWindowViewModel(stage);
+        mainWindowViewModel = MainWindowViewModel.create(stage);
         TimelineViewModel homeTimeline = mainWindowViewModel.addTimeline("Home");
         TimelineViewModel eventsTimeline = mainWindowViewModel.addTimeline("Events");
         stage.show();
@@ -88,7 +88,7 @@ public class Main extends Application {
     }
 
     private void linkTwitter(boolean connectUS) throws TwitterException {
-        TwitterConnector connector = new TwitterConnector();
+        TwitterConnector connector = TwitterConnector.create();
         connector.setAPIKeys(
                 "oth6oiwapFEgesjI6U9CcD2QC",
                 "Qc3utRmAcBcO5BeZSG4xZKaVx81jf3NHRHKXXZKJHxEC2du1KS"
@@ -107,7 +107,7 @@ public class Main extends Application {
                 public void onStatus(Status status) {
                     StaticObjects.getStatusCache().set(status);
                     StaticObjects.getTwitterEventDispatcher().onFire(
-                            OnStatusEvent.class, new OnStatusEvent(account, status)
+                            OnStatusEvent.class, OnStatusEvent.create(account, status)
                     );
                 }
 
@@ -115,7 +115,7 @@ public class Main extends Application {
                 public void onFavorite(User source, User target, Status favoritedStatus) {
                     StaticObjects.getStatusCache().set(favoritedStatus);
                     StaticObjects.getTwitterEventDispatcher().onFire(
-                            OnFavoriteEvent.class, new OnFavoriteEvent(source, target, favoritedStatus)
+                            OnFavoriteEvent.class, OnFavoriteEvent.create(source, target, favoritedStatus)
                     );
                 }
             });

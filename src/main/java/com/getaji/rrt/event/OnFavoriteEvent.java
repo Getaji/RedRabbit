@@ -15,7 +15,11 @@ public class OnFavoriteEvent implements Event {
     private final User target;
     private final Status favoritedStatus;
 
-    public OnFavoriteEvent(User source, User target, Status favoritedStatus) {
+    public static OnFavoriteEvent create(User source, User target, Status favoritedStatus) {
+        return new OnFavoriteEvent(source, target, favoritedStatus);
+    }
+
+    private OnFavoriteEvent(User source, User target, Status favoritedStatus) {
         this.source = source;
         this.target = target;
         this.favoritedStatus = favoritedStatus;

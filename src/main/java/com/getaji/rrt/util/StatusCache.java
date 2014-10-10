@@ -11,7 +11,14 @@ import java.util.Map;
  * @author Getaji
  */
 public class StatusCache {
+
+    public static StatusCache create() {
+        return new StatusCache();
+    }
+
     private final Map<Long, Status> statuses = new HashMap<>();
+
+    private StatusCache() {}
 
     public Status get(Long id) {
         return statuses.get(id);

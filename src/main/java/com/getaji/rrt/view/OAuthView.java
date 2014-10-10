@@ -21,6 +21,10 @@ import java.util.function.Consumer;
  */
 public class OAuthView extends Stage {
 
+    public static OAuthView create() {
+        return new OAuthView();
+    }
+
     private final Stage stage = new Stage();
 
     private final GridPane gridPane = new GridPane();
@@ -57,7 +61,7 @@ public class OAuthView extends Stage {
     }
 
     public static OAuthView showWindow(Consumer<String> whenPressed) {
-        OAuthView oAuthView = new OAuthView();
+        OAuthView oAuthView = OAuthView.create();
         oAuthView.setOnPressedOK(e -> whenPressed.accept(oAuthView.getValue()));
         oAuthView.show();
         return oAuthView;

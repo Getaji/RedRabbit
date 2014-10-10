@@ -22,6 +22,11 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class ImageViewerView {
+
+    public static ImageViewerView create() {
+        return new ImageViewerView();
+    }
+
     private final Stage stage;
     private final BorderPane borderPane = new BorderPane();
     private final ImageView imageView = new ImageView();
@@ -35,7 +40,7 @@ public class ImageViewerView {
     private final double defaultWidth = 640;
     private final double defaultHeight = 480;
 
-    public ImageViewerView() {
+    private ImageViewerView() {
         // --------------------------------
         Scene scene = new Scene(borderPane);
         stage = new Stage();
