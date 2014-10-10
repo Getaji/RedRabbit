@@ -1,0 +1,9 @@
+#top-pane {
+    -fx-background-color: #333;
+}
+.image-view {
+    -fx-border-color: #FFF;
+}
+.text-field {
+    -fx-border-radius: none;
+}

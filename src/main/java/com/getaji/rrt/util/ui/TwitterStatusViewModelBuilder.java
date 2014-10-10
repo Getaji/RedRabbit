@@ -193,7 +193,7 @@ final class TwitterStatusViewModelBuilder implements StatusBuilder {
             if (mediaEntity.getType().equals("photo")) {
                 ThumbnailView thumbnail = new ThumbnailView();
                 StaticObjects.getImageCache().request(mediaEntity.getMediaURL(), (loc, img) -> {
-                    thumbnail.setImage(img);
+                    thumbnail.setImage(img, loc);
                     view.update();
                 });
                 view.addBottomNode(thumbnail.getNode());

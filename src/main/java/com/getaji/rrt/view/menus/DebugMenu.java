@@ -46,7 +46,7 @@ public class DebugMenu extends AbstractMenuAdapter {
                     BorderPane pane = new BorderPane();
                     stage.setScene(new Scene(pane));
                     TextField field = new TextField();
-                    field.setText("519766044701769731");
+                    field.setText("483956321301979136");
                     Button button = new Button("OK");
                     button.setOnAction(ae -> {
                         try {

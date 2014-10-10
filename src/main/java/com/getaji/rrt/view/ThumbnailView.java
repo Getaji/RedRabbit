@@ -1,5 +1,6 @@
 package com.getaji.rrt.view;
 
+import com.getaji.rrt.viewmodel.ImageViewer;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -9,12 +10,16 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import lombok.extern.log4j.Log4j2;
+
+import java.net.URISyntaxException;
 
 /**
  * javadoc here.
  *
  * @author Getaji
  */
+@Log4j2
 public class ThumbnailView {
 
     private final BorderPane pane = new BorderPane();
@@ -24,20 +29,20 @@ public class ThumbnailView {
 
     public ThumbnailView() {
         pane.setCenter(imageView);
-        BorderPane.setAlignment(imageView, Pos.CENTER_LEFT);
+        BorderPane.setAlignment(imageView, Pos.CENTER);
         imageView.setPreserveRatio(true);
         pane.setStyle("-fx-border-color: #555;");
+        pane.setCursor(Cursor.HAND);
     }
 
-    public ThumbnailView(Image image) {
-        this();
-        setImage(image);
-    }
-
-    public ThumbnailView setImage(Image image) {
+    public ThumbnailView setImage(Image image, String location) {
         if (plainImage == null) {
             imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                new ImageViewer().setImage(image).show();
+                try {
+                    ImageViewer.create().setImage(image, location).showView();
+                } catch (URISyntaxException e1) {
+                    log.error(e1);
+                }
             });
         }
         plainImage = image;
@@ -55,7 +60,6 @@ public class ThumbnailView {
             imageView.setFitWidth(300);
             pane.setMaxWidth(300);
         }
-        pane.setCursor(Cursor.HAND);
     }
 
     public Node getNode() {

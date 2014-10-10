@@ -30,6 +30,17 @@ public class ImageCache {
                 });
     }
 
+    /**
+     * キャッシュが存在する場合に破棄し、画像を新たに読み込んで返します。
+     *
+     * @param imageLocation 画像の場所
+     * @param consumer 画像を渡す関数
+     */
+    public synchronized void requestNew(String imageLocation, BiConsumer<String, Image> consumer) {
+        images.remove(imageLocation);
+        request(imageLocation, consumer);
+    }
+
     public synchronized void request(String imageLocation, BiConsumer<String, Image> consumer) {
         Image image = images.get(imageLocation);
         if (image == null) {
@@ -59,6 +70,7 @@ public class ImageCache {
             Platform.runLater(() -> {
                 requester.get(imageLocation).forEach(c ->
                         c.accept(imageLocation, image));
+                requester.remove(imageLocation);
             });
         });
     }
