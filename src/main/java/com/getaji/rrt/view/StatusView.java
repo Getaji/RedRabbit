@@ -45,7 +45,7 @@ public class StatusView {
     // Static factory methods
     // ================================================================
     public static StatusView create(StatusViewModel viewModel) {
-        return StatusView.create(viewModel);
+        return new StatusView(viewModel);
     }
 
     // ================================================================
