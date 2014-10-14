@@ -32,7 +32,10 @@ public class TimelineView {
         protected void updateItem(StatusView view, boolean empty) {
             super.updateItem(view, empty);
 
-            if (view == null) { return; }
+            if (view == null || empty) {
+                setGraphic(null);
+                return;
+            }
 
             double size = viewModel.getModel().getWidth();
             if (!isBound || view.getView().getPrefWidth() != size) {
@@ -44,7 +47,7 @@ public class TimelineView {
                 isBound = true;
             }
             requestLayout();
-            this.setGraphic(view.getView());
+            setGraphic(view.getView());
         }
     }
 
