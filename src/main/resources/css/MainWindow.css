@@ -1,0 +1,17 @@
+.tab-content-area {
+    -fx-border-color: #999;
+    -fx-border-radius: 3;
+    -fx-padding: 2;
+}
+
+.tab-content-area:focus {
+    -fx-border-color: #FF0000;
+}
+
+.tab-down-button {
+    -fx-border-color: #FF0000;
+}
+
+.tab-header-background {
+    -fx-opacity: 0;
+}

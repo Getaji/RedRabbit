@@ -105,8 +105,8 @@ public class StatusView {
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
         buttonsBox.setSpacing(3);
         bottomPane.setPadding(new Insets(4, 0, 4, 0));
-        buttonRT.getStylesheets().add("button_rt.css");
-        buttonFav.getStylesheets().add("button_fav.css");
+        buttonRT.getStylesheets().add("css/button_rt.css");
+        buttonFav.getStylesheets().add("css/button_fav.css");
         buttonMore.addEventHandler(ActionEvent.ACTION, e -> {
             log.debug(String.format("width:%s height:%s", borderPane.getWidth(), borderPane.getHeight()));
         });

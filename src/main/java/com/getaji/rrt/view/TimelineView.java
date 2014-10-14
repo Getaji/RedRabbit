@@ -74,7 +74,7 @@ public class TimelineView {
         this.viewModel = viewModel;
         listView.setPrefWidth(400);
         listView.setCellFactory(view -> new TimelineStatusCell());
-        listView.getStylesheets().add("timeline.css");
+        listView.getStylesheets().add("css/timeline.css");
         listView.setOnScroll(e -> {
             scrollPosition = e.getTotalDeltaY();
         });
