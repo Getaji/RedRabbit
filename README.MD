@@ -10,7 +10,7 @@ RedRabbit
 * Maven
 
 ## Contributeとかについて
-pull requestを受けるとメンタルが爆発四散して死ぬ病気なので控えていただきますようお願いします。Issueも。
+ゆるして
 
 ## ライセンス
-まだ確定してないのでメインロジック以外の機能の転用はOK、他は禁止くらいの扱いでお願いします。（めんどくさい）
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">RedRabbit</span> は <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">クリエイティブ・コモンズ 表示 - 非営利 - 改変禁止 4.0 国際 ライセンスの下で提供されています。</a>.
